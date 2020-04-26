@@ -1,9 +1,12 @@
 runtime: python37
 
+instance_class: F4_1G
 
 handlers:
 - url: /assets
-  static_dir: assets
+  static_dir: assets/
 
 - url: /.*
   script: auto
+
+entrypoint: gunicorn -t 120 -b :$PORT main:server
