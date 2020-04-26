@@ -5,7 +5,6 @@ import numpy as np
 
 from datetime import datetime
 
-import plotly.express as px
 import plotly.graph_objects as go
 from datetime import timedelta, date
 
@@ -31,7 +30,7 @@ def plot_deaths (dfd, color_map):
    
     dfd['day'] = dfd.date.apply(lambda x: x.date()).apply(str)
     dfd = dfd.sort_values(by='day')
-    dfd = dfd[dfd.deaths > case_threshold]
+    dfd = dfd[dfd.deaths >= case_threshold]
 
     days = dfd.day.unique().tolist()
     countries = dfd.country.unique().tolist()
@@ -47,12 +46,12 @@ def plot_deaths (dfd, color_map):
     }
 
     # fill in most of layout
-    fig_dict["layout"]["height"] = 600
-    fig_dict["layout"]["width"] = 1000
-    fig_dict["layout"]["title"] = {"text": "<b>Seven Day Average Rate of Change in Covide-19 Related Deaths vs Cumulative Total Deaths<b>",
+    #fig_dict["layout"]["height"] = 640
+    # fig_dict["layout"]["width"] = 1000
+    fig_dict["layout"]["title"] = {"text": "<b>Seven Day Average Rate of Change in COVID19 Related Deaths vs Cumulative Total Deaths<b>",
                                     'y':0.90,'x':0.5,'xanchor': 'center','yanchor': 'top'}
     fig_dict["layout"]["titlefont"] = {'size': 16}                               
-    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfd['deaths'].max() *1.3)], 
+    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfd['deaths'].max() *1.4)], 
                                     "title": "Total Deaths (log scale)", "type": "log", "showline": True}
     fig_dict["layout"]["yaxis"] = {"range": [np.log10(case_threshold/10), np.log10(dfd['avg_daily_new'].max() *1.3)], 
                                     "title": "Seven (7) Day Average Of Daily Deaths (log scale)", "type": "log", "showline": True}
@@ -202,10 +201,9 @@ def plot_deaths (dfd, color_map):
         sliders_dict["steps"].append(slider_step)
 
     fig_dict["layout"]["sliders"] = [sliders_dict]
-    # fig_dict['layout']['annotations'] = {"x": math.log(190000), "y": math.log(22000), "text": "10:1 Ratio",
-    #                 "font": {"size": 20, "color": "LightGray"}}
+
     fig = go.Figure(fig_dict)
-    fig.update_layout(template= 'plotly_white', showlegend=False)
+    fig.update_layout(template= 'plotly_white', showlegend=False, autosize=True)
     # Line reference to the axes       
     # fig["layout"]["shape"] = {"type": "line", "x0": 0, "y0": 0, "x1": max_axis*1.3, "y1": max_axis*1.3/10,
     #             "line": {"color": "LightGrey", "width": 2, "dash": "dash"}}
@@ -234,11 +232,9 @@ def plot_deaths (dfd, color_map):
                 arrowcolor="LightGrey"
             ))
     fig.add_annotation(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.34, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.32, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
-    #fig.update_layout(showlegend=True)
-
-    
+        
     #fig.show()
     #py.plot(fig, filename = 'Traking Covid19 Deaths South Africa', auto_open=True)
     return fig

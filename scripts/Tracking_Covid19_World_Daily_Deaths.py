@@ -10,15 +10,15 @@ from plotly.subplots import make_subplots
 from datetime import timedelta, date
 
 # from get_data import df_both
-def plot_daily_confirmed (dfn, color_map):
+def plot_daily_deaths (dfn, color_map):
     
-    case_threshold = 100
+    case_threshold = 1
 
     dfn = dfn.reset_index()
-    dfn = dfn[['date', 'country', 'confirmed']].sort_values('date')
+    dfn = dfn[['date', 'country', 'deaths']].sort_values('date')
     dfn = dfn.reset_index()
 
-    dfn = (dfn.assign(daily_new=dfn.groupby('country', as_index=False)[['confirmed']]
+    dfn = (dfn.assign(daily_new=dfn.groupby('country', as_index=False)[['deaths']]
                                 .diff().fillna(0)
                                 .reset_index(0, drop=True)))
 
@@ -29,7 +29,7 @@ def plot_daily_confirmed (dfn, color_map):
 
     dfn['day'] = dfn.date.apply(lambda x: x.date()).apply(str)
     dfn = dfn.sort_values(by='day')
-    dfn = dfn[dfn.confirmed >= case_threshold]
+    dfn = dfn[dfn.deaths >= case_threshold]
 
     days = dfn.day.unique().tolist()
     countries = dfn.country.unique().tolist()
@@ -41,8 +41,8 @@ def plot_daily_confirmed (dfn, color_map):
                                   # vertical_spacing=0.05,
                                  subplot_titles=countries) 
     #Make a plot
-    fig.update_layout(#height=640,# width=1000,
-                  title_text="<b>Daily New Confirmed COVID19 Infections<b>",
+    fig.update_layout(#height=640, #width=1000,
+                  title_text="<b>Daily New Confirmed Deaths due to COVID19<b>",
                   titlefont={'size': 20}, 
                   hovermode="closest",
                   title_xanchor= 'center',
@@ -50,8 +50,7 @@ def plot_daily_confirmed (dfn, color_map):
                   title_xref= "container",
                   title_x= 0.5,
                   title_y=0.90,
-                  autosize=True)
-
+                  autosize = True )
 
     fig.update_layout(template= 'plotly_white', showlegend=False)
     # make data

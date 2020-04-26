@@ -6,13 +6,11 @@ import numpy as np
 
 from datetime import datetime
 
-
-import plotly.express as px
 import plotly.graph_objects as go
 from datetime import timedelta, date
 
 def plot_mortality(dfm, color_map):
-    # dfm['mortality'] = []
+    
     case_threshold = 100
     dfm = dfm[dfm['confirmed']>=case_threshold]
     dfm.loc[:,"mortality"] = dfm["deaths"]/dfm['confirmed']*100
@@ -58,8 +56,8 @@ def plot_mortality(dfm, color_map):
                                                     texttemplate = "%{x:,.1f}<br>%{y}",cliponaxis = False))], 
                                         layout = go.Layout(dict(
                                             font = {"size":12},
-                                            height = 600,
-                                            width = 1000,
+                                            #height = 640,
+                                            # width = 1000,
                                             xaxis = {"showline":True,"visible":True, "dtick": 1, 
                                             "showgrid":True,"zeroline":True, "range":[0, max_axis], "title": "Mortality Rate %"},
                                             yaxis = {"showline":True, "visible":False},
@@ -92,7 +90,7 @@ def plot_mortality(dfm, color_map):
             frames=list(listOfFrames)
             ))
     fig.add_annotation(dict(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(dfm.date.max().strftime('%B %d, %Y')), 
-        x=1, y=-0.16, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.18, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0))
     # Line reference to the axes
     fig.add_shape(dict(   
@@ -120,16 +118,11 @@ def plot_mortality(dfm, color_map):
             ax=ave_mortality+0.8,
             ay=1.5
         )) 
-    fig.update_layout(template= 'plotly_white')
+    fig.update_layout(template= 'plotly_white', autosize=True)
     
     return fig
     #  fig.show()
-    # #fig = fig.to_json()
-    # pio.write_html(fig, "D:\Corona\html", config=True, auto_play=True, include_plotlyjs=True, include_mathjax=False, 
-    #             post_script=None, full_html=True, animation_opts=dict, validate=True, default_width='100%', default_height='100%', auto_open=False)
-
-    #make_bar_chart(df)#  , "country", "1800", "2040",title = "Income Per Person (in Dollors)", frame_rate = 1)
-
+   
 
 
 
