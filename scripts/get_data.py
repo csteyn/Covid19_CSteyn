@@ -9,7 +9,6 @@ from datetime import datetime
 from datetime import timedelta, date
 import io
 
-
 def get_data(base_url='https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series'):
     def load_timeseries(name, 
                     base_url='https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series'):
@@ -54,7 +53,6 @@ def get_data(base_url='https://raw.githubusercontent.com/CSSEGISandData/COVID-19
                     
         return df
 
-
     df_confirmed = load_timeseries('confirmed')
     df_deaths = load_timeseries('deaths')
     df_both = pd.merge(df_confirmed, df_deaths, on=['date', 'country', 'state'])
@@ -67,7 +65,10 @@ def get_data(base_url='https://raw.githubusercontent.com/CSSEGISandData/COVID-19
 
     select = ['South Africa', 'US', 'Japan', 'Korea, South', 'Italy', 'Spain', 'Germany', 'United Kingdom (total)', 
                 'Russia', 'India', 'Australia (total)','Turkey','Iran', 'Canada (total)', 'Hong Kong', 'Argentina', 
-                'Brazil', 'Colombia', 'Chile', 'China (total)', 'France (total)', 'Sweden']
+                'Brazil', 'Colombia', 'Chile', 'China (total)', 'France (total)', 'Sweden', 'Netherlands (total)', 
+                'Belgium', 'New Zealand', 'Switzerland', 'Portugal', 'Pakistan', 'Mexico', 'Israel', 'Greece',
+                'Finland', 'Egypt', 'Denmark (total)', 'Ecuador', 'Peru', 'Ireland', 'Austria', 'Saudi Arabia', 'Singapore',
+                'Poland', 'Romania', 'Qatar', 'Belarus']
     df_both = df_both.loc[(df_both.country.isin (select))]
 
     df_both['country'].replace(to_replace ='United Kingdom (total)', value='UK', inplace=True)
@@ -76,7 +77,8 @@ def get_data(base_url='https://raw.githubusercontent.com/CSSEGISandData/COVID-19
     df_both['country'].replace(to_replace ='China (total)', value='China', inplace=True)
     df_both['country'].replace(to_replace ='France (total)', value='France', inplace=True)
     df_both['country'].replace(to_replace ='Korea, South', value='South Korea', inplace=True)
+    df_both['country'].replace(to_replace ='Netherlands (total)', value='Netherlands', inplace=True)
+    df_both['country'].replace(to_replace ='Denmark (total)', value='Denmark', inplace=True)
     
-
     return df_both
 
