@@ -8,4 +8,4 @@ The github pages for Johns Hopkins (https://github.com/CSSEGISandData/COVID-19) 
 
 ### Python
 
-Plotly Dash was used for the Dashboard and was deployed using Google App Engin. 
+Plotly Dash was used for the Dashboard and was deployed using Google App Engin. Please see the link here: https://southafrica-covid-19-csteyn.nw.r.appspot.com/
