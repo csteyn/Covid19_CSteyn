@@ -42,11 +42,15 @@ import textwrap
 
 #sys.path.append(os.path.join(os.path.dirname(__file__),  "scripts"))
 from scripts.get_data import get_data
+from scripts.Get_SA_Data import get_SA_data
 from scripts.Tracking_Covid19_World_Confirmed import plot_confirmed
 from scripts.Tracking_Covid19_World_Deaths import plot_deaths
 from scripts.Tracking_Covid19_World_Mortality import plot_mortality
 from scripts.Tracking_Covid19_World_Daily import plot_daily_confirmed
 from scripts.Tracking_Covid19_World_Daily_Deaths import plot_daily_deaths
+from scripts.Tracking_Covid19_Provinces_Confirmed import plot_provinces_confirmed
+from scripts.Tracking_Covid19_Provincial_Daily import plot_daily_confirmed_province
+from scripts.Tracking_Covid19_Provincial_Daily_Deaths import plot_daily_deaths_provincial
 
 app = dash.Dash(
     __name__, meta_tags=[{"name": "viewport", "content": "width=device-width"}]
@@ -54,17 +58,32 @@ app = dash.Dash(
 server = app.server
 
 df = get_data()
+dfSA = get_SA_data()
+
+df_SA_correct = pd.merge((df[['date','confirmed']][df['country']=='South Africa']), (dfSA[['date','confirmed']][dfSA['province']=='Unknown']), on='date', how='left')
+
+df_SA_correct['confirmed'] = df_SA_correct['confirmed_x']-df_SA_correct['confirmed_y']
+df_SA_correct['country'] = "South Africa Corrected"
+df_SA_correct = df_SA_correct[['date', 'country', 'confirmed']]
+df = df.append(df_SA_correct)
 
 countries = df.country.unique().tolist()
 countries.sort()
 color_map = dict(zip(countries, palette))
 color_map['South Africa'] = '#d4af37'
+color_map['South Africa Corrected'] = '#008000'
 startlist = ('Germany', 'India', 'Italy', 'South Korea','Sweden',
-             'Russia', 'South Africa', 'Spain',  'US', 'Austrailia', 'UK')
+             'Russia', 'South Africa', 'South Africa Corrected', 'Spain',  'US', 'Austrailia', 'UK')
+deaths = df[(df['date']== '2020-03-28')&(df['country'] == 'South Africa')]
 
 country_options = [
     {"label": str(country), "value": str(country)} for country in countries
 ]
+
+provinces = dfSA.province.unique().tolist()
+provinces.sort()
+color_mapSA = dict(zip(provinces, palette))
+color_mapSA['Unknown'] = '#d3d3d3'
 
 # Create app layout
 app.layout = html.Div(
@@ -122,7 +141,10 @@ app.layout = html.Div(
                                 {"label": "Deaths ", "value": "deaths"},
                                 {"label": "Mortaility ", "value": "mortality"},
                                 {"label": "Daily Confirmed Cases", "value": "dailyconfirmed"},
-                                {"label": "Daily Deaths", "value": "dailydeaths"}
+                                {"label": "Daily Deaths", "value": "dailydeaths"},
+                                {"label": "Confirmed Provincial Cases ", "value": "confirmedprovincial"},
+                                {"label": "Daily Confirmed Provincial Cases ", "value": "dailyconfirmedprovincial"},
+                                {"label": "Daily Provincial Deaths ", "value": "dailydeathsprovincial"},
                             ],
                             value="confirmed",
                             labelStyle={"display": "inline-block"},
@@ -176,22 +198,30 @@ app.layout = html.Div(
 @app.callback(
     Output('graph', 'figure'),
     [Input('chart_selector', 'value'),
-     Input('country_selector', 'value'),
+     Input('country_selector', 'value')     
      ])
 def update_graph(chart_selector, country_selector):
     global df
+    global dfSA
     df_select = df.loc[(df.country.isin (list(country_selector)))]
-
+    
     if chart_selector == 'confirmed':
         return plot_confirmed(df_select,color_map)
     if chart_selector == 'deaths':
-        return plot_deaths(df_select, color_map)
+        return plot_deaths(df_select[df_select['country'] != 'South Africa Corrected'], color_map)
     if chart_selector == 'mortality':
-        return plot_mortality(df_select, color_map)
+        return plot_mortality(df_select[df_select['country'] != 'South Africa Corrected'], color_map)
     if chart_selector == 'dailyconfirmed':
         return plot_daily_confirmed(df_select, color_map)
     if chart_selector == 'dailydeaths':
-        return plot_daily_deaths(df_select, color_map)   
+        return plot_daily_deaths(df_select[df_select['country'] != 'South Africa Corrected'], color_map)  
+    if chart_selector == 'confirmedprovincial':
+        return plot_provinces_confirmed(dfSA, color_mapSA)
+    if chart_selector == 'dailyconfirmedprovincial':
+        return plot_daily_confirmed_province(dfSA, color_mapSA)
+    if chart_selector == 'dailydeathsprovincial':
+        return plot_daily_deaths_provincial(dfSA, color_mapSA) 
+    
 
 @app.callback(Output("note", "children"), [Input('chart_selector', 'value')])
 def change_note(chart_selector):
@@ -199,6 +229,8 @@ def change_note(chart_selector):
         note = (textwrap.dedent('''
         **Note on Confirmed Cases:**  
         * _Press play to see how the graph evolves over time. Move the slider to go to a specific date._  
+        * For South Africa there are two lines plotted. There seems to have been a problem with the data released and an unknow province value was included and then slowly removed by decreasing the cumulative value. 
+        I believe there was double recording of data and have removed this in the corrected data plot.
         * Both axes are presented on a log scale.  
         * The loglog plot indicate that during the growth phase of the virus that each 10 daily new confirmed cases results in an increase of a 100 total confirmed cases.
         When the curve moves away form the line this is an indication that the measures taken are starting to work.'''))
@@ -219,6 +251,8 @@ def change_note(chart_selector):
     if chart_selector == 'dailyconfirmed':
         note = (textwrap.dedent('''
         **Note on Daily Number of Confirmed Cases:**  
+        * There are two graphs for South Africa. There seems to have been a problem with the data released and an unknow province value was included and then slowly removed by decreasing the cumulative value. 
+        I believe there was double recording of data and have removed the unknown data in the corrected graph.
         * Numbers on the y axis is not on a log scale and each graph has its own range.  
         * Notice the 7 to 8-day cycle of infections'''))
     if chart_selector == 'dailydeaths':
@@ -226,9 +260,27 @@ def change_note(chart_selector):
         **Note on Daily Number of Deaths:**  
         * Numbers on the y axis is not on a log scale and each graph has its own range.  
         * Notice there is also a 7 to 8-day cycle although less prominent than for infections'''))
+    if chart_selector == 'confirmedprovincial':
+        note = (textwrap.dedent('''
+        **Note on Confirmed Provincial Cases:**  
+        * _Press play to see how the graph evolves over time.  Move the slider to go to a specific date._           
+        * Both axes are presented on a log scale.  
+        * The loglog plot indicate that during the growth phase of the virus that each 10 daily new confirmed cases results in an increase of a 100 total confirmed cases.
+        When the curve moves away form the line this is an indication that the measures taken are starting to work.'''))
+    if chart_selector == 'dailyconfirmedprovincial':
+        note = (textwrap.dedent('''
+        **Note on Daily Number of Confirmed Cases per Province:**  
+        * Numbers on the y axis is not on a log scale and each graph has its own range. 
+        * There are negative values when the cumualitive totals for the province is adjusted down.'''))
+    if chart_selector == 'dailydeathsprovincial':
+        note = (textwrap.dedent('''
+        **Note on Daily Number of Deaths per Province:**  
+        * Numbers on the y axis is not on a log scale and each graph has its own range. 
+        * There are negative values when the cumualitive totals for the province is adjusted down.'''))
+
     return note
 
 
 if __name__ == '__main__':
     app.server(host='0.0.0.0', port=8080, debug=False)
-    # app.run_server(debug=True)
+#    app.run_server(debug=True)
