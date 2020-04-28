@@ -1,44 +1,44 @@
-# Function to plot Covid 19 world deths
+# Function to plot confirmed cases
 import math
 import pandas as pd
 import numpy as np
 
 from datetime import datetime
 
+import plotly.express as px
 import plotly.graph_objects as go
 from datetime import timedelta, date
 
-
-
-def plot_deaths (dfd, color_map):
+# from get_data import df_both
+def plot_provinces_confirmed(dfp, color_mapSA):
     
-    # from get_data import df
+    case_threshold = 10
 
-    case_threshold = 5 
-    dfd = dfd.reset_index()
-    dfd = dfd[['date', 'country', 'deaths']].sort_values('date')
-       
-    dfd = dfd.reset_index()
-    # dfd = dfd[dfd['country'] != "South Africa Corrected"]
-    dfd = (dfd.assign(daily_new=dfd.groupby('country', as_index=False)[['deaths']]
+    dfp= dfp.reset_index()
+    dfp = dfp[['date', 'province', 'confirmed']].sort_values('date')
+    dfp = dfp[dfp['province'] != 'Unknown']
+    dfp = dfp.reset_index()
+
+    dfp = (dfp.assign(daily_new=dfp.groupby('province', as_index=False)[['confirmed']]
                                 .diff().fillna(0)
                                 .reset_index(0, drop=True)))
 
-    dfd = (dfd.assign(avg_daily_new=dfd.groupby('country', as_index=False)[['daily_new']]
+    dfp = (dfp.assign(avg_daily_new=dfp.groupby('province', as_index=False)[['daily_new']]
                                     .rolling(7).mean()
                                     .reset_index(0, drop=True)))
 
-   
-    dfd['day'] = dfd.date.apply(lambda x: x.date()).apply(str)
-    dfd = dfd.sort_values(by='day')
-    dfd = dfd[dfd.deaths >= case_threshold]
 
-    days = dfd.day.unique().tolist()
-    countries = dfd.country.unique().tolist()
-    countries.sort()
+    dfp['day'] = dfp.date.apply(lambda x: x.date()).apply(str)
+    dfp = dfp.sort_values(by='day')
+    dfp = dfp[dfp.confirmed >= case_threshold]
 
-    max_axis = dfd.deaths.max()
-
+    days = dfp.day.unique().tolist()
+    provinces = dfp.province.unique().tolist()
+    provinces.sort()
+    lockdown=dfp[dfp['date']== "2020-03-28"]
+    
+    max_axis = dfp.confirmed.max()
+    max_yaxis = dfp.avg_daily_new.max()
     #Make a plot
     fig_dict = {
         "data": [],
@@ -47,15 +47,15 @@ def plot_deaths (dfd, color_map):
     }
 
     # fill in most of layout
-    #fig_dict["layout"]["height"] = 640
+    # fig_dict["layout"]["height"] = 640
     # fig_dict["layout"]["width"] = 1000
-    fig_dict["layout"]["title"] = {"text": "<b>Seven Day Average Rate of Change in COVID19 Related Deaths vs Cumulative Total Deaths<b>",
+    fig_dict["layout"]["title"] = {"text": "<b>Seven Day Average Rate of Change of New Confirmed COVID19 Infections vs Cumulative Total<b>",
                                     'y':0.90,'x':0.5,'xanchor': 'center','yanchor': 'top'}
     fig_dict["layout"]["titlefont"] = {'size': 16}                               
-    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfd['deaths'].max() *1.4)], 
-                                    "title": "Total Deaths (log scale)", "type": "log", "showline": True}
-    fig_dict["layout"]["yaxis"] = {"range": [np.log10(case_threshold/10), np.log10(dfd['avg_daily_new'].max() *1.3)], 
-                                    "title": "Seven (7) Day Average Of Daily Deaths (log scale)", "type": "log", "showline": True}
+    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfp['confirmed'].max() *1.6)], 
+                                   "title": "Total Confirmed Cases (log scale)", "type": "log", "showline": True}
+    fig_dict["layout"]["yaxis"] = {"range": [np.log10(case_threshold/10), np.log10(dfp['avg_daily_new'].max() *1.3)], 
+                                    "title": "Seven (7) Day Average Of Daily New Confirmed Cases (log scale)", "type": "log", "showline": True}
     fig_dict["layout"]["hovermode"] = "closest"
     fig_dict["layout"]["sliders"] = {
         "args": [
@@ -118,40 +118,41 @@ def plot_deaths (dfd, color_map):
         "y": 0,
         "steps": []
     }
-
+    
     # make data
     day = max(days)
-    for country in countries:
-        dataset_by_day = dfd[dfd["day"] <= day]
-        dataset_by_day_and_country = dataset_by_day[ dataset_by_day["country"]==country ]
-        color = color_map[country]
+    for province in provinces:
+        dataset_by_day = dfp[dfp["day"] <= day]
+        dataset_by_day_and_province = dataset_by_day[dataset_by_day["province"]==province]
+        color = color_mapSA[province]
+
         data_dict = {
-            "x": list(dataset_by_day_and_country["deaths"]),
-            "y": list(dataset_by_day_and_country["avg_daily_new"]),
+            "x": list(dataset_by_day_and_province["confirmed"]),
+            "y": list(dataset_by_day_and_province["avg_daily_new"]),
             "mode": "lines",
             "line": {"color": color},
-            "text": dataset_by_day_and_country[['deaths', 'avg_daily_new']],
-            "name": country,
+            "text": dataset_by_day_and_province[['confirmed', 'avg_daily_new']],
+            "name": province,
             'hoverlabel': {'namelength': 0},
-            'hovertemplate': '<b>%{hovertext}</b><br>Deaths: %{x:,d}<br>Average Daily: %{y:,.0f}',
-            'hovertext': dataset_by_day_and_country['country']
+            'hovertemplate': '<b>%{hovertext}</b><br>Confirmed: %{x:,d}<br>Average Daily: %{y:,.0f}',
+            'hovertext': dataset_by_day_and_province['province']
         }
         fig_dict["data"].append(data_dict)
 
-        dataset_by_current_day = dfd[dfd["day"] == day]
-        dataset_by_current_day_and_country = dataset_by_current_day[ dataset_by_current_day["country"]==country ]
+        dataset_by_current_day = dfp[dfp["day"] == day]
+        dataset_by_current_day_and_province = dataset_by_current_day[ dataset_by_current_day["province"]==province ]
         data_dict2 = {
-            "x": list(dataset_by_current_day_and_country["deaths"]),
-            "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
+            "x": list(dataset_by_current_day_and_province["confirmed"]),
+            "y": list(dataset_by_current_day_and_province["avg_daily_new"]),
             "mode": "markers+text",
             "marker": {"color": color,"size":12},
-            "text": dataset_by_current_day_and_country[["country"]],
+            "text": dataset_by_current_day_and_province[["province"]],
             "textposition": "middle right",
             "textfont": {"size":16, "color":color},
-            "name": country,
+            "name": province,
             'hoverlabel': {'namelength': 0},
-            'hovertemplate': '<b>%{hovertext}</b><br>Deaths: %{x:,d}<br>Average Daily: %{y:,.0f}',
-            'hovertext': dataset_by_day_and_country['country']
+            'hovertemplate': '<b>%{hovertext}</b><br>Confirmed: %{x:,d}<br>Average Daily: %{y:,.0f}',
+            'hovertext': dataset_by_day_and_province['province']
         }
         fig_dict["data"].append(data_dict2)
 
@@ -159,34 +160,34 @@ def plot_deaths (dfd, color_map):
     # make frames
     for day in days:
         frame = {"data": [], "name": day}
-        for country in countries:
-            color = color_map[country]
-            dataset_by_day = dfd[dfd["day"] <= day]
-            dataset_by_day_and_country = dataset_by_day[dataset_by_day["country"] == country]
+        for province in provinces:
+            color = color_mapSA[province]
+            dataset_by_day = dfp[dfp["day"] <= day]
+            dataset_by_day_and_province = dataset_by_day[dataset_by_day["province"] == province]
 
             data_dict = {
-                "x": list(dataset_by_day_and_country["deaths"]),
-                "y": list(dataset_by_day_and_country["avg_daily_new"]),
+                "x": list(dataset_by_day_and_province["confirmed"]),
+                "y": list(dataset_by_day_and_province["avg_daily_new"]),
                 "mode": "lines",
                 "line": {"color": color},
-                "text": dataset_by_day_and_country[['deaths', 'avg_daily_new']],
-                "name": country
+                "text": dataset_by_day_and_province[['confirmed', 'avg_daily_new']],
+                "name": province
             }
             
             frame["data"].append(data_dict)
 
-            dataset_by_current_day = dfd[dfd["day"] == day]
-            dataset_by_current_day_and_country = dataset_by_current_day[dataset_by_current_day["country"] == country]
+            dataset_by_current_day = dfp[dfp["day"] == day]
+            dataset_by_current_day_and_province = dataset_by_current_day[dataset_by_current_day["province"] == province]
 
             data_dict2 = {
-            "x": list(dataset_by_current_day_and_country["deaths"]),
-            "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
+            "x": list(dataset_by_current_day_and_province["confirmed"]),
+            "y": list(dataset_by_current_day_and_province["avg_daily_new"]),
             "mode": "markers+text",
             "marker": {"color": color, "size":12},
-            "text": dataset_by_current_day_and_country[["country"]],
+            "text": dataset_by_current_day_and_province[["province"]],
             "textposition": "middle right",
             "textfont": {"size":16, "color":color},
-            "name": country
+            "name": province
             }
             frame["data"].append(data_dict2)
 
@@ -205,11 +206,8 @@ def plot_deaths (dfd, color_map):
 
     fig = go.Figure(fig_dict)
     fig.update_layout(template= 'plotly_white', showlegend=False, autosize=True)
-    # Line reference to the axes       
-    # fig["layout"]["shape"] = {"type": "line", "x0": 0, "y0": 0, "x1": max_axis*1.3, "y1": max_axis*1.3/10,
-    #             "line": {"color": "LightGrey", "width": 2, "dash": "dash"}}
-
-    fig.add_shape(dict(
+        
+    fig.add_shape(
             # Line reference to the axes
                 type="line",
                 x0=10,
@@ -221,21 +219,45 @@ def plot_deaths (dfd, color_map):
                     width=2,
                     dash="dash"
                 )
-            ))
+            )
 
-    fig.add_annotation(dict(
-                x=math.log10(20000),
-                y=math.log10(2000),
+    fig.add_annotation(
+                x=math.log10(900),
+                y=math.log10(90),
                 xref='x',
                 yref='y',
                 text="10:1 Ratio",
                 font=dict(color="LightGrey"),
                 arrowcolor="LightGrey"
-            ))
-    fig.add_annotation(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(day), 
+            )
+    fig.add_annotation(text='Based on COVID Data Repository by the University of Pretoria ({})\nBy Carl Steyn'.format(day), 
         x=1, y=-0.27, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
-        
-    #fig.show()
-    #py.plot(fig, filename = 'Traking Covid19 Deaths South Africa', auto_open=True)
+    
+    # fig.add_shape(dict(   
+    #         type="line",
+    #         x0=1087,
+    #         y0=10,
+    #         x1=1087,
+    #         y1=max_yaxis*1.4,
+    #         line=dict(
+    #             color="LightGrey",
+    #             width=2,
+    #             dash="dash"
+    #         )
+    #     ))
+    
+    # fig.add_annotation(dict(
+    #         x=math.log10(1087),
+    #         y=math.log10(10000),
+    #         xref='x',
+    #         yref='y',
+    #         text= "Lockdown in South Africa Starts",
+    #         font=dict(color="LightGrey"),
+    #         arrowcolor="LightGrey"            
+    #     )) 
+
+
     return fig
+    # fig.show()
+    #plotly.offline.plot(fig, "file.html")

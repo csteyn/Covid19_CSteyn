@@ -71,6 +71,31 @@ def plot_daily_confirmed (dfn, color_map):
         fig.append_trace(go.Scatter(x=dataset_country['day'],y=dataset_country['avg_daily_new'], name=country, 
                 mode='lines', marker_color='lightgrey'),
                 row=xloc, col=yloc)
+        if country in ["South Africa", "South Africa Corrected"]:
+            fig.add_shape(dict(   
+            type="line",
+            x0='2020-03-28',
+            y0=0,
+            x1='2020-03-28',
+            y1=max(dataset_country['daily_new']),
+            line=dict(
+                color="LightGrey",
+                width=2,
+                dash="dash"
+                ) 
+            ), row=xloc, col=yloc)
+    
+            fig.add_annotation(dict(
+                    x='2020-03-28',
+                    y=max(dataset_country['daily_new']*0.6),
+                    xref='x',
+                    yref='y',
+                    text= ("Lockdown Starts"),
+                    font=dict(color="LightGrey"),
+                    arrowcolor="LightGrey",
+                    xanchor="left"            
+                ), row=xloc, col=yloc) 
+
     fig.update_xaxes(tickformat = '%d/%m', tickfont=dict(size=8), tickangle=0, nticks=5)
     fig.update_yaxes(tickfont=dict(size=9))
 

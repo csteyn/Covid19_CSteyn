@@ -19,6 +19,7 @@ def plot_mortality(dfm, color_map):
     dfm = dfm.reset_index()
     dfm = dfm[['date', 'country', 'mortality']].sort_values('country')
     dfm = dfm.reset_index()
+    # dfm = dfm[dfm['country'] != "South Africa Corrected"]
     ave_mortality = dfm.mortality.median()
 
     dfm['mortality'] = dfm.mortality.fillna(0)

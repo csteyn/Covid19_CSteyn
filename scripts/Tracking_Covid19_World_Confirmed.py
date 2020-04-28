@@ -36,7 +36,7 @@ def plot_confirmed (dfc, color_map):
     countries.sort()
 
     max_axis = dfc.confirmed.max()
-
+    max_yaxis = dfc.avg_daily_new.max()
     #Make a plot
     fig_dict = {
         "data": [],
@@ -207,8 +207,8 @@ def plot_confirmed (dfc, color_map):
     fig.add_shape(
             # Line reference to the axes
                 type="line",
-                x0=10,
-                y0=1,
+                x0=100,
+                y0=10,
                 x1=max_axis*10,
                 y1=max_axis,
                 line=dict(
@@ -228,9 +228,33 @@ def plot_confirmed (dfc, color_map):
                 arrowcolor="LightGrey"
             )
     fig.add_annotation(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.32, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.27, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
     
+    fig.add_shape(dict(   
+            type="line",
+            x0=1087,
+            y0=10,
+            x1=1087,
+            y1=max_yaxis*1.4,
+            line=dict(
+                color="LightGrey",
+                width=2,
+                dash="dash"
+            )
+        ))
+    
+    fig.add_annotation(dict(
+            x=math.log10(1087),
+            y=math.log10(10000),
+            xref='x',
+            yref='y',
+            text= "Lockdown in South Africa Starts",
+            font=dict(color="LightGrey"),
+            arrowcolor="LightGrey"            
+        )) 
+
+
     return fig
     # fig.show()
     #plotly.offline.plot(fig, "file.html")

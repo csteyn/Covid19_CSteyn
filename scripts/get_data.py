@@ -56,7 +56,7 @@ def get_data(base_url='https://raw.githubusercontent.com/CSSEGISandData/COVID-19
     df_confirmed = load_timeseries('confirmed')
     df_deaths = load_timeseries('deaths')
     df_both = pd.merge(df_confirmed, df_deaths, on=['date', 'country', 'state'])
-    df_both = df_both.drop(["type_x", "type_y"], axis=1)
+    df_both = df_both.drop(["type_x", "type_y", "state" ], axis=1)
     df_both.rename(columns={'cases_x': 'confirmed',
                     'cases_y': 'deaths'},
                         inplace=True, errors='raise')
