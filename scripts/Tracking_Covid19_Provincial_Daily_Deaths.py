@@ -13,28 +13,32 @@ from datetime import timedelta, date
 def plot_daily_deaths_provincial (dfn, color_mapSA):
     
     case_threshold = 1
-
-    dfn = dfn.reset_index()
+    
     dfn = dfn[['date', 'province', 'deaths']].sort_values('date')
-    dfn = dfn[dfn['province'] != 'Unknown']
-    dfn = dfn.reset_index()
 
+    dfn = dfn[dfn['province'] != 'Unknown']
+    dfn = dfn[dfn.deaths >= case_threshold]    
+    dfn = dfn.reset_index()
+    
     dfn = (dfn.assign(daily_new=dfn.groupby('province', as_index=False)[['deaths']]
                                 .diff().fillna(0)
                                 .reset_index(0, drop=True)))
 
+    dfn.loc[dfn['date']=='2020-04-08', 'daily_new'] = dfn['deaths'].loc[dfn['date']=='2020-04-08']
+    # dfn['Energy W/h'] = dfn['Energy W/h'].astype(int)
+
     dfn = (dfn.assign(avg_daily_new=dfn.groupby('province', as_index=False)[['daily_new']]
-                                    .rolling(2).mean()
+                                    .rolling(2).mean().fillna(0)
                                     .reset_index(0, drop=True)))
-
-
+        
     dfn['day'] = dfn.date.apply(lambda x: x.date()).apply(str)
     dfn = dfn.sort_values(by='day')
-    dfn = dfn[dfn.deaths >= case_threshold]
 
-    days = dfn.day.unique().tolist()
+
     provinces = dfn.province.unique().tolist()
     provinces.sort()
+    days = dfn.day.unique().tolist()
+
     provinces_length = len(provinces)
     row_length = math.ceil(provinces_length/3)
 

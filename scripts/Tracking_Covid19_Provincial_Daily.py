@@ -23,6 +23,8 @@ def plot_daily_confirmed_province (dfn, color_mapSA):
                                 .diff().fillna(0)
                                 .reset_index(0, drop=True)))
 
+    dfn.loc[dfn['date']=='2020-03-05', 'daily_new'] = dfn['confirmed'].loc[dfn['date']=='2020-03-05']
+
     dfn = (dfn.assign(avg_daily_new=dfn.groupby('province', as_index=False)[['daily_new']]
                                     .rolling(2).mean()
                                     .reset_index(0, drop=True)))

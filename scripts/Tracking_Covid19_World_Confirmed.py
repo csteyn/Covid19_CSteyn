@@ -228,7 +228,7 @@ def plot_confirmed (dfc, color_map):
                 arrowcolor="LightGrey"
             )
     fig.add_annotation(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.27, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.30, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
     
     fig.add_shape(dict(   
