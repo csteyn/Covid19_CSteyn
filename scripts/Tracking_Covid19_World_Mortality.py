@@ -56,14 +56,14 @@ def plot_mortality(dfm, color_map):
                                                     hoverinfo = "none",textposition = "outside",
                                                     texttemplate = "%{x:,.1f}<br>%{y}",cliponaxis = False))], 
                                         layout = go.Layout(dict(
-                                            font = {"size":12},
-                                            #height = 640,
-                                            # width = 1000,
+                                            font = {"size":14},
+                                            # height = 680,
+                                            # width = 1200,
                                             xaxis = {"showline":True,"visible":True, "dtick": 1, 
                                             "showgrid":True,"zeroline":True, "range":[0, max_axis], "title": "Mortality Rate %"},
                                             yaxis = {"showline":True, "visible":False},
                                             title = "Mortality Rate For: "+ datetime.strftime(day, "%Y-%m-%d"),
-                                            titlefont={"size":22})))))
+                                            titlefont={"size":24})))))
 
     end_data = dfm[dfm["date"]==end_date].sort_values(by='mortality')
     end_data["color"] = end_data["country"].apply(lambda x: color_map.get(x))
@@ -75,10 +75,10 @@ def plot_mortality(dfm, color_map):
                     texttemplate = "%{x:,.1f}<br>%{y}",cliponaxis = False ))],
             layout=go.Layout(dict(
                 title="Mortality Rate For: "+ datetime.strftime(end_date, "%Y-%m-%d"),
-                titlefont={"size":22},
-                font = {"size":12},
-                height = 600,
-                width = 1000,
+                titlefont={"size":24},
+                font = {"size":14},
+                # height = 600,
+                # width = 1000,
                 xaxis = {"showline":True, "visible":True, "range":[0, max_axis],
                 "showgrid":True,"zeroline":True, "title": "Mortality Rate %", "dtick": 1},
                 yaxis = {"showline":True, "visible":False},

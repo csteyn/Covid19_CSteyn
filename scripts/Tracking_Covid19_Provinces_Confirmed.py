@@ -145,10 +145,10 @@ def plot_provinces_confirmed(dfp, color_mapSA):
             "x": list(dataset_by_current_day_and_province["confirmed"]),
             "y": list(dataset_by_current_day_and_province["avg_daily_new"]),
             "mode": "markers+text",
-            "marker": {"color": color,"size":12},
+            "marker": {"color": color, "size": 10}, 
             "text": dataset_by_current_day_and_province[["province"]],
             "textposition": "middle right",
-            "textfont": {"size":16, "color":color},
+            "textfont": { "size": 14, "color":color}, 
             "name": province,
             'hoverlabel': {'namelength': 0},
             'hovertemplate': '<b>%{hovertext}</b><br>Confirmed: %{x:,d}<br>Average Daily: %{y:,.0f}',
@@ -183,10 +183,10 @@ def plot_provinces_confirmed(dfp, color_mapSA):
             "x": list(dataset_by_current_day_and_province["confirmed"]),
             "y": list(dataset_by_current_day_and_province["avg_daily_new"]),
             "mode": "markers+text",
-            "marker": {"color": color, "size":12},
+            "marker": {"color": color, "size": 10},
             "text": dataset_by_current_day_and_province[["province"]],
             "textposition": "middle right",
-            "textfont": {"size":16, "color":color},
+            "textfont": {"size": 14, "color":color},
             "name": province
             }
             frame["data"].append(data_dict2)
@@ -231,33 +231,8 @@ def plot_provinces_confirmed(dfp, color_mapSA):
                 arrowcolor="LightGrey"
             )
     fig.add_annotation(text='Based on COVID Data Repository by the University of Pretoria ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.30, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.31, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
     
-    # fig.add_shape(dict(   
-    #         type="line",
-    #         x0=1087,
-    #         y0=10,
-    #         x1=1087,
-    #         y1=max_yaxis*1.4,
-    #         line=dict(
-    #             color="LightGrey",
-    #             width=2,
-    #             dash="dash"
-    #         )
-    #     ))
-    
-    # fig.add_annotation(dict(
-    #         x=math.log10(1087),
-    #         y=math.log10(10000),
-    #         xref='x',
-    #         yref='y',
-    #         text= "Lockdown in South Africa Starts",
-    #         font=dict(color="LightGrey"),
-    #         arrowcolor="LightGrey"            
-    #     )) 
-
 
     return fig
-    # fig.show()
-    #plotly.offline.plot(fig, "file.html")

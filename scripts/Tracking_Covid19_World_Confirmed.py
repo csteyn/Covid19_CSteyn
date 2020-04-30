@@ -142,10 +142,10 @@ def plot_confirmed (dfc, color_map):
             "x": list(dataset_by_current_day_and_country["confirmed"]),
             "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
             "mode": "markers+text",
-            "marker": {"color": color,"size":12},
+            "marker": {"color": color,"size": 10}, 
             "text": dataset_by_current_day_and_country[["country"]],
             "textposition": "middle right",
-            "textfont": {"size":16, "color":color},
+            "textfont": {"size": 14,"color":color}, 
             "name": country,
             'hoverlabel': {'namelength': 0},
             'hovertemplate': '<b>%{hovertext}</b><br>Confirmed: %{x:,d}<br>Average Daily: %{y:,.0f}',
@@ -180,10 +180,10 @@ def plot_confirmed (dfc, color_map):
             "x": list(dataset_by_current_day_and_country["confirmed"]),
             "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
             "mode": "markers+text",
-            "marker": {"color": color, "size":12},
+            "marker": {"color": color}, #, "size": '12px'
             "text": dataset_by_current_day_and_country[["country"]],
             "textposition": "middle right",
-            "textfont": {"size":16, "color":color},
+            "textfont": { "color":color}, #"size": '16px',
             "name": country
             }
             frame["data"].append(data_dict2)
@@ -228,7 +228,7 @@ def plot_confirmed (dfc, color_map):
                 arrowcolor="LightGrey"
             )
     fig.add_annotation(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.30, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.31, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
     
     fig.add_shape(dict(   

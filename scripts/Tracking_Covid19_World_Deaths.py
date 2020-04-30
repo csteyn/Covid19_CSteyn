@@ -144,10 +144,10 @@ def plot_deaths (dfd, color_map):
             "x": list(dataset_by_current_day_and_country["deaths"]),
             "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
             "mode": "markers+text",
-            "marker": {"color": color,"size":12},
+            "marker": {"color": color,"size":12}, 
             "text": dataset_by_current_day_and_country[["country"]],
             "textposition": "middle right",
-            "textfont": {"size":16, "color":color},
+            "textfont": {"size":16,"color":color}, 
             "name": country,
             'hoverlabel': {'namelength': 0},
             'hovertemplate': '<b>%{hovertext}</b><br>Deaths: %{x:,d}<br>Average Daily: %{y:,.0f}',
@@ -182,7 +182,7 @@ def plot_deaths (dfd, color_map):
             "x": list(dataset_by_current_day_and_country["deaths"]),
             "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
             "mode": "markers+text",
-            "marker": {"color": color, "size":12},
+            "marker": {"color": color, "size":12}, 
             "text": dataset_by_current_day_and_country[["country"]],
             "textposition": "middle right",
             "textfont": {"size":16, "color":color},
@@ -205,9 +205,6 @@ def plot_deaths (dfd, color_map):
 
     fig = go.Figure(fig_dict)
     fig.update_layout(template= 'plotly_white', showlegend=False, autosize=True)
-    # Line reference to the axes       
-    # fig["layout"]["shape"] = {"type": "line", "x0": 0, "y0": 0, "x1": max_axis*1.3, "y1": max_axis*1.3/10,
-    #             "line": {"color": "LightGrey", "width": 2, "dash": "dash"}}
 
     fig.add_shape(dict(
             # Line reference to the axes
@@ -233,9 +230,7 @@ def plot_deaths (dfd, color_map):
                 arrowcolor="LightGrey"
             ))
     fig.add_annotation(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.30, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.31, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
         
-    #fig.show()
-    #py.plot(fig, filename = 'Traking Covid19 Deaths South Africa', auto_open=True)
     return fig

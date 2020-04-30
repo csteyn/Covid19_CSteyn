@@ -99,8 +99,8 @@ def plot_daily_deaths_provincial (dfn, color_mapSA):
                 arrowcolor="LightGrey",
                 xanchor="left"            
             ), row=xloc, col=yloc) 
-    fig.update_xaxes(tickformat = '%d/%m', tickfont=dict(size=8), tickangle=0, nticks=5)
-    fig.update_yaxes(tickfont=dict(size=9))
+    fig.update_xaxes(tickformat = '%d/%m', tickfont=dict(size= 8), tickangle=0, nticks=5) 
+    fig.update_yaxes(tickfont=dict(size= 9))
 
       
    
