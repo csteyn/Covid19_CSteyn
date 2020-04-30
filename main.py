@@ -37,7 +37,7 @@ palette = ('#FF9966', '#FBE7B2', '#926F5B', '#FE6F5E', '#A3E3ED', '#0066FF', '#9
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
-from dash.dependencies import Input, Output, State
+from dash.dependencies import Input, Output, State, ClientsideFunction
 import textwrap
 
 #sys.path.append(os.path.join(os.path.dirname(__file__),  "scripts"))
@@ -74,7 +74,7 @@ color_map['South Africa'] = '#d4af37'
 color_map['South Africa Corrected'] = '#008000'
 startlist = ('Germany', 'India', 'Italy', 'South Korea','Sweden',
              'Russia', 'South Africa', 'South Africa Corrected', 'Spain',  'US', 'Austrailia', 'UK')
-deaths = df[(df['date']== '2020-03-28')&(df['country'] == 'South Africa')]
+deaths = df.loc[(df['date']== '2020-03-28')&(df['country'] == 'South Africa')]
 
 country_options = [
     {"label": str(country), "value": str(country)} for country in countries
@@ -88,6 +88,8 @@ color_mapSA['Unknown'] = '#d3d3d3'
 # Create app layout
 app.layout = html.Div(
     [
+        # empty Div to trigger javascript file for graph resizing
+        html.Div(id="output-clientside"),
         html.Div(
             [
                 html.Div(
@@ -179,13 +181,14 @@ app.layout = html.Div(
                 html.Div(
                     [                                                     
                         html.Div(
-                            [dcc.Graph(id="graph", style={"height": "100%", "width": "100%"})],
-                            id="count_graph",
+                            [dcc.Graph(id="count_graph")], #, style={"height": "100%", "width": "100%"}
+                            id="countGraphContainer",
                             className="pretty_container",
                         ),
                     ],
                     id="right-column",
-                    className="nine columns",
+                    className="eleven columns",
+                    style={"height": "100vh"},
                 ),
             ],
             className="row flex-display",
@@ -195,8 +198,15 @@ app.layout = html.Div(
     style={"display": "flex", "flex-direction": "column"},
 )
 
+# Create callbacks
+app.clientside_callback(
+    ClientsideFunction(namespace="clientside", function_name="resize"),
+    Output("output-clientside", "children"),
+    [Input("count_graph", "figure")],
+)
+
 @app.callback(
-    Output('graph', 'figure'),
+    Output('count_graph', 'figure'),
     [Input('chart_selector', 'value'),
      Input('country_selector', 'value')     
      ])
