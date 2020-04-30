@@ -5,7 +5,7 @@
 
 body {
   background-color: #f2f2f2;
-  margin: 2%;
+  margin: 2%;  
 }
 
 .two.columns {
@@ -18,12 +18,12 @@ body {
 }
 
 .pretty_container {
-  border-radius: 5px;
+  border-radius: 2px;
   background-color: #f9f9f9;
-  margin: 10px;
+  margin: 2px;
   padding: 15px;
   position: relative;
-  box-shadow: 2px 2px 2px lightgrey;
+  box-shadow: 2px 2px 2px lightgrey;  
 }
 
 .bare_container {
@@ -51,7 +51,7 @@ body {
 }
 
 .flex-display {
-  display: flex;
+  display: flex;  
 }
 
 .container-display {
@@ -66,13 +66,13 @@ body {
 
 #count_graph {
   position: absolute;
-  height: 100%;
-  width: calc(95% * 9 / 12);
+  height: 96%;
+  width: 97%;
 }
 
 #countGraphContainer {
   flex: 5;
-  position: relative;
+  position: relative;  
 }
 
 #header {
@@ -134,7 +134,7 @@ body {
 
 #mainContainer {
   display: flex;
-  flex-direction: column;
+  flex-direction: column;  
 }
 
 #pie_graph > div > div > svg:nth-child(3) > g.infolayer > g.legend {
