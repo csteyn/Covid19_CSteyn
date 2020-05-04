@@ -60,9 +60,9 @@ def plot_mortality(dfm, color_map):
                                             # height = 680,
                                             # width = 1200,
                                             xaxis = {"showline":True,"visible":True, "dtick": 1, 
-                                            "showgrid":True,"zeroline":True, "range":[0, max_axis], "title": "Mortality Rate %"},
+                                            "showgrid":True,"zeroline":True, "range":[0, max_axis], "title": "Case Fatality Rate %"},
                                             yaxis = {"showline":True, "visible":False},
-                                            title = "Mortality Rate For: "+ datetime.strftime(day, "%Y-%m-%d"),
+                                            title = "Case Fatality Rate For: "+ datetime.strftime(day, "%Y-%m-%d"),
                                             titlefont={"size":24})))))
 
     end_data = dfm[dfm["date"]==end_date].sort_values(by='mortality')
@@ -74,13 +74,13 @@ def plot_mortality(dfm, color_map):
                     hoverinfo = "none",textposition = "outside",
                     texttemplate = "%{x:,.1f}<br>%{y}",cliponaxis = False ))],
             layout=go.Layout(dict(
-                title="Mortality Rate For: "+ datetime.strftime(end_date, "%Y-%m-%d"),
+                title="Case Fatality Rate For: "+ datetime.strftime(end_date, "%Y-%m-%d"),
                 titlefont={"size":24},
                 font = {"size":14},
                 # height = 600,
                 # width = 1000,
                 xaxis = {"showline":True, "visible":True, "range":[0, max_axis],
-                "showgrid":True,"zeroline":True, "title": "Mortality Rate %", "dtick": 1},
+                "showgrid":True,"zeroline":True, "title": "Case Fatality Rate %", "dtick": 1},
                 yaxis = {"showline":True, "visible":False},
                 updatemenus=[dict(
                 type="buttons",
@@ -90,8 +90,8 @@ def plot_mortality(dfm, color_map):
                 )),
             frames=list(listOfFrames)
             ))
-    fig.add_annotation(dict(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(dfm.date.max().strftime('%B %d, %Y')), 
-        x=1, y=-0.18, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+    fig.add_annotation(dict(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(dfm.date.max().strftime('%Y-%m-%d')), 
+        x=1, y=-0.16, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0))
     # Line reference to the axes
     fig.add_shape(dict(   
@@ -112,7 +112,7 @@ def plot_mortality(dfm, color_map):
             y=1,
             xref='x',
             yref='y',
-            text= ("Median Mortality Rate<br>for countries selected:  "+ str(round(ave_mortality,1))),
+            text= ("Median Case Fatality Rate<br>for countries selected:  "+ str(round(ave_mortality,1))),
             font=dict(color="Grey"),
             arrowcolor="Grey",
             xanchor="left",

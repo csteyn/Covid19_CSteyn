@@ -1,11 +1,3 @@
-# https://github.com/dsfsi/covid19za/blob/master/data/covid19za_timeline_testing.csv
-# https://github.com/dsfsi/covid19za/blob/master/data/district_data/provincial_wc_cumulative.csv
-# https://github.com/dsfsi/covid19za/blob/master/data/district_data/provincial_nw_cumulative.csv
-# https://github.com/dsfsi/covid19za/blob/master/data/district_data/provincial_lp_cumulative.csv
-# https://github.com/dsfsi/covid19za/blob/master/data/district_data/provincial_gp_cumulative.csv
-# https://github.com/dsfsi/covid19za/blob/master/data/district_data/district_wc_keys.csv
-# https://github.com/dsfsi/covid19za/blob/master/data/district_data/district_lp_keys.csv
-
 
 import sys
 import requests

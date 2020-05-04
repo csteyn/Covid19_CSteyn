@@ -52,9 +52,9 @@ def plot_deaths (dfd, color_map):
     fig_dict["layout"]["title"] = {"text": "<b>Seven Day Average Rate of Change in COVID19 Related Deaths vs Cumulative Total Deaths<b>",
                                     'y':0.90,'x':0.5,'xanchor': 'center','yanchor': 'top'}
     fig_dict["layout"]["titlefont"] = {'size': 16}                               
-    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfd['deaths'].max() *1.4)], 
+    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfd['deaths'].max() *1.2)], 
                                     "title": "Total Deaths (log scale)", "type": "log", "showline": True}
-    fig_dict["layout"]["yaxis"] = {"range": [np.log10(case_threshold/10), np.log10(dfd['avg_daily_new'].max() *1.3)], 
+    fig_dict["layout"]["yaxis"] = {"range": [np.log10(case_threshold/10), np.log10(dfd['avg_daily_new'].max() *1.2)], 
                                     "title": "Seven (7) Day Average Of Daily Deaths (log scale)", "type": "log", "showline": True}
     fig_dict["layout"]["hovermode"] = "closest"
     fig_dict["layout"]["sliders"] = {
@@ -145,6 +145,7 @@ def plot_deaths (dfd, color_map):
             "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
             "mode": "markers+text",
             "marker": {"color": color,"size":12}, 
+            "cliponaxis": False,
             "text": dataset_by_current_day_and_country[["country"]],
             "textposition": "middle right",
             "textfont": {"size":16,"color":color}, 
@@ -182,7 +183,8 @@ def plot_deaths (dfd, color_map):
             "x": list(dataset_by_current_day_and_country["deaths"]),
             "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
             "mode": "markers+text",
-            "marker": {"color": color, "size":12}, 
+            "marker": {"color": color, "size":12},
+             "cliponaxis": False,
             "text": dataset_by_current_day_and_country[["country"]],
             "textposition": "middle right",
             "textfont": {"size":16, "color":color},
@@ -230,7 +232,7 @@ def plot_deaths (dfd, color_map):
                 arrowcolor="LightGrey"
             ))
     fig.add_annotation(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.31, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.30, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
         
     return fig
