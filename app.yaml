@@ -1,6 +1,6 @@
 runtime: python37
 
-instance_class: F4_1G
+instance_class: F4
 
 handlers:
 - url: /assets
