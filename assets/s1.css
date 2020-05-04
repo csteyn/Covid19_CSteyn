@@ -570,18 +570,7 @@ there.
   .container-display {
     display: flex;
   }
-  #wells,
-  #gas,
-  #oil {
-    margin-right: 10px;
-  }
 
-  #wells {
-    margin-left: 0px;
-  }
-  #water {
-    margin-right: 0px;
-  }
   .mini_container {
     margin-bottom: 25px !important;
     border-radius: 5px;
