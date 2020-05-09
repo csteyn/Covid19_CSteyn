@@ -50,9 +50,9 @@ def plot_confirmed (dfc, color_map):
     fig_dict["layout"]["title"] = {"text": "<b>Seven Day Average Rate of Change of New Confirmed COVID19 Infections vs Cumulative Total<b>",
                                     'y':0.90,'x':0.5,'xanchor': 'center','yanchor': 'top'}
     fig_dict["layout"]["titlefont"] = {'size': 16}                               
-    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfc['confirmed'].max() *1.4)], 
+    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfc['confirmed'].max() *1.2)], 
                                    "title": "Total Confirmed Cases (log scale)", "type": "log", "showline": True}
-    fig_dict["layout"]["yaxis"] = {"range": [np.log10(case_threshold/10), np.log10(dfc['avg_daily_new'].max() *1.3)], 
+    fig_dict["layout"]["yaxis"] = {"range": [np.log10(case_threshold/10), np.log10(dfc['avg_daily_new'].max() *1.2)], 
                                     "title": "Seven (7) Day Average Of Daily New Confirmed Cases (log scale)", "type": "log", "showline": True}
     fig_dict["layout"]["hovermode"] = "closest"
     fig_dict["layout"]["sliders"] = {
@@ -143,6 +143,7 @@ def plot_confirmed (dfc, color_map):
             "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
             "mode": "markers+text",
             "marker": {"color": color,"size": 10}, 
+            "cliponaxis": False,
             "text": dataset_by_current_day_and_country[["country"]],
             "textposition": "middle right",
             "textfont": {"size": 14,"color":color}, 
@@ -181,6 +182,7 @@ def plot_confirmed (dfc, color_map):
             "y": list(dataset_by_current_day_and_country["avg_daily_new"]),
             "mode": "markers+text",
             "marker": {"color": color}, #, "size": '12px'
+            "cliponaxis": False,
             "text": dataset_by_current_day_and_country[["country"]],
             "textposition": "middle right",
             "textfont": { "color":color}, #"size": '16px',
@@ -228,7 +230,7 @@ def plot_confirmed (dfc, color_map):
                 arrowcolor="LightGrey"
             )
     fig.add_annotation(text='Based on COVID Data Repository by Johns Hopkins CSSE ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.31, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.30, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
     
     fig.add_shape(dict(   

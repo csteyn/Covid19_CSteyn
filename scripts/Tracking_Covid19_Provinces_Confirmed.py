@@ -52,7 +52,7 @@ def plot_provinces_confirmed(dfp, color_mapSA):
     fig_dict["layout"]["title"] = {"text": "<b>Seven Day Average Rate of Change of New Confirmed COVID19 Infections vs Cumulative Total<b>",
                                     'y':0.90,'x':0.5,'xanchor': 'center','yanchor': 'top'}
     fig_dict["layout"]["titlefont"] = {'size': 16}                               
-    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfp['confirmed'].max() *1.6)], 
+    fig_dict["layout"]["xaxis"] = {"range": [np.log10(case_threshold), np.log10(dfp['confirmed'].max() *1.3)], 
                                    "title": "Total Confirmed Cases (log scale)", "type": "log", "showline": True}
     fig_dict["layout"]["yaxis"] = {"range": [np.log10(case_threshold/10), np.log10(dfp['avg_daily_new'].max() *1.3)], 
                                     "title": "Seven (7) Day Average Of Daily New Confirmed Cases (log scale)", "type": "log", "showline": True}
@@ -128,7 +128,7 @@ def plot_provinces_confirmed(dfp, color_mapSA):
 
         data_dict = {
             "x": list(dataset_by_day_and_province["confirmed"]),
-            "y": list(dataset_by_day_and_province["avg_daily_new"]),
+            "y": list(dataset_by_day_and_province["avg_daily_new"]),            
             "mode": "lines",
             "line": {"color": color},
             "text": dataset_by_day_and_province[['confirmed', 'avg_daily_new']],
@@ -146,6 +146,7 @@ def plot_provinces_confirmed(dfp, color_mapSA):
             "y": list(dataset_by_current_day_and_province["avg_daily_new"]),
             "mode": "markers+text",
             "marker": {"color": color, "size": 10}, 
+            "cliponaxis": False,
             "text": dataset_by_current_day_and_province[["province"]],
             "textposition": "middle right",
             "textfont": { "size": 14, "color":color}, 
@@ -184,6 +185,7 @@ def plot_provinces_confirmed(dfp, color_mapSA):
             "y": list(dataset_by_current_day_and_province["avg_daily_new"]),
             "mode": "markers+text",
             "marker": {"color": color, "size": 10},
+            "cliponaxis": False,
             "text": dataset_by_current_day_and_province[["province"]],
             "textposition": "middle right",
             "textfont": {"size": 14, "color":color},
@@ -231,7 +233,7 @@ def plot_provinces_confirmed(dfp, color_mapSA):
                 arrowcolor="LightGrey"
             )
     fig.add_annotation(text='Based on COVID Data Repository by the University of Pretoria ({})\nBy Carl Steyn'.format(day), 
-        x=1, y=-0.31, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
+        x=1, y=-0.30, xref="paper", yref="paper", font=dict(color="LightGrey"), showarrow=False, xanchor='right', 
         yanchor='auto', xshift=0, yshift=0)
     
 

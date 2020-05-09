@@ -25,7 +25,6 @@ def plot_daily_deaths_provincial (dfn, color_mapSA):
                                 .reset_index(0, drop=True)))
 
     dfn.loc[dfn['date']=='2020-04-08', 'daily_new'] = dfn['deaths'].loc[dfn['date']=='2020-04-08']
-    # dfn['Energy W/h'] = dfn['Energy W/h'].astype(int)
 
     dfn = (dfn.assign(avg_daily_new=dfn.groupby('province', as_index=False)[['daily_new']]
                                     .rolling(2).mean().fillna(0)
